@@ -4,7 +4,7 @@ import Image from "next/image";
 import { HeroText } from "../components/HeroText";
 import { LoginOrRegister } from "../components/LoginOrRegister";
 
-const Home: NextPage = () => {
+const Register: NextPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <Head>
@@ -13,12 +13,12 @@ const Home: NextPage = () => {
       </Head>
       <main className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <HeroText isLogin={true} />
-          <LoginOrRegister isLogin={true} />
+          <HeroText isLogin={false} />
+          <LoginOrRegister isLogin={false} />
         </div>
       </main>
     </div>
   );
 };
 
-export default Home;
+export default Register;

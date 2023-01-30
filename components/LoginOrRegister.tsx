@@ -1,0 +1,145 @@
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { toastifyConfig } from "../utils/config";
+import { api_url } from "../utils/config";
+import { useLocalStorage } from "usehooks-ts";
+import Router from "next/router";
+import Axios from "axios";
+import axios from "axios";
+
+export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",
+  });
+
+  const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  var data = JSON.stringify(formData);
+
+  var config = {
+    method: "post",
+    url: isLogin ? ` ${api_url}/auth/login` : `${api_url}/auth/register`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  async function login() {
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        setAuthtoken(response.data.token);
+        toast.success("Login successful", toastifyConfig);
+      })
+      .catch(function (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message, toastifyConfig);
+        } else {
+          toast.error("Something went wrong", toastifyConfig);
+        }
+      });
+  }
+  async function register() {
+    axios(config)
+      .then(function (response) {
+        toast.success("Register successful", toastifyConfig);
+      })
+      .catch(function (error) {
+        if (error?.response?.data?.message) {
+          toast.error(error.response.data.message, toastifyConfig);
+        } else {
+          toast.error("Something went wrong", toastifyConfig);
+        }
+      });
+  }
+
+  async function handleLoginOrRegister() {
+    if (isLogin) {
+      await login();
+    } else {
+      await register();
+    }
+  }
+
+  return (
+    <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+      <div className="card-body">
+        {!isLogin && (
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Name</span>
+            </label>
+            <input
+              name="name"
+              type="text"
+              placeholder="name"
+              className="input input-bordered"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+        )}
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Email</span>
+          </label>
+          <input
+            name="email"
+            type="text"
+            placeholder="email"
+            className="input input-bordered"
+            value={formData.email}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Password</span>
+          </label>
+          <input
+            name="password"
+            type="text"
+            placeholder="password"
+            className="input input-bordered"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {isLogin && (
+            <label className="label">
+              <a href="#" className="label-text-alt link link-hover">
+                Forgot password?
+              </a>
+            </label>
+          )}
+        </div>
+        <div className="form-control mt-6">
+          <button
+            className="btn btn-primary"
+            onClick={() => handleLoginOrRegister()}
+          >
+            {isLogin ? "Login" : "Register"}
+          </button>
+        </div>
+        <div className="form-control mt-2">
+          <Link
+            href={isLogin ? "./register" : "./"}
+            className="btn btn-secondary"
+          >
+            or {!isLogin ? "Login" : "Register"}
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
