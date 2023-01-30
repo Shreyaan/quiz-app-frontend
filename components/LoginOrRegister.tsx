@@ -5,14 +5,15 @@ import { toastifyConfig } from "../utils/config";
 import { api_url } from "../utils/config";
 import { useLocalStorage } from "usehooks-ts";
 import Router from "next/router";
-import Axios from "axios";
+
 import axios from "axios";
+import { errorHandler } from "../utils/errorHandler";
 
 export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    name: "",
+    username: "",
   });
 
   const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
@@ -41,6 +42,7 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
         console.log(JSON.stringify(response.data));
         setAuthtoken(response.data.token);
         toast.success("Login successful", toastifyConfig);
+        Router.push("/quiz");
       })
       .catch(function (error) {
         if (error?.response?.data?.message) {
@@ -54,13 +56,10 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
     axios(config)
       .then(function (response) {
         toast.success("Register successful", toastifyConfig);
+        Router.push("/");
       })
       .catch(function (error) {
-        if (error?.response?.data?.message) {
-          toast.error(error.response.data.message, toastifyConfig);
-        } else {
-          toast.error("Something went wrong", toastifyConfig);
-        }
+        errorHandler({ error });
       });
   }
 
@@ -75,54 +74,56 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
   return (
     <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
       <div className="card-body">
-        {!isLogin && (
+        <form action="">
+          {!isLogin && (
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                name="username"
+                type="text"
+                placeholder="username"
+                className="input input-bordered"
+                value={formData.username}
+                onChange={handleChange}
+              />
+            </div>
+          )}
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Name</span>
+              <span className="label-text">Email</span>
             </label>
             <input
-              name="name"
-              type="text"
-              placeholder="name"
+              name="email"
+              type="email"
+              placeholder="email"
               className="input input-bordered"
-              value={formData.name}
+              value={formData.email}
               onChange={handleChange}
             />
           </div>
-        )}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Email</span>
-          </label>
-          <input
-            name="email"
-            type="text"
-            placeholder="email"
-            className="input input-bordered"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Password</span>
-          </label>
-          <input
-            name="password"
-            type="text"
-            placeholder="password"
-            className="input input-bordered"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          {isLogin && (
+          <div className="form-control">
             <label className="label">
-              <a href="#" className="label-text-alt link link-hover">
-                Forgot password?
-              </a>
+              <span className="label-text">Password</span>
             </label>
-          )}
-        </div>
+            <input
+              name="password"
+              type="password"
+              placeholder="password"
+              className="input input-bordered"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            {isLogin && (
+              <label className="label">
+                <a href="#" className="label-text-alt link link-hover">
+                  Forgot password?
+                </a>
+              </label>
+            )}
+          </div>
+        </form>
         <div className="form-control mt-6">
           <button
             className="btn btn-primary"
@@ -143,3 +144,4 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
     </div>
   );
 }
+
