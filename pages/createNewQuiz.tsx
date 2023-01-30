@@ -36,77 +36,73 @@ const Quiz: NextPage = () => {
     });
   };
 
-//   const handleQuestionChange = (
-//     event: React.ChangeEvent<HTMLInputElement>,
-//     index: number
-//   ) => {
-//     const questions = formData.questions.map((question, i) => {
-//       if (i === index) {
-//         return {
-//           ...question,
-//           [event.target.name]: event.target.value,
-//         };
-//       }
-//       return question;
-//     });
-//     setFormData({ ...formData, questions });
-//   };
+  //   const handleQuestionChange = (
+  //     event: React.ChangeEvent<HTMLInputElement>,
+  //     index: number
+  //   ) => {
+  //     const questions = formData.questions.map((question, i) => {
+  //       if (i === index) {
+  //         return {
+  //           ...question,
+  //           [event.target.name]: event.target.value,
+  //         };
+  //       }
+  //       return question;
+  //     });
+  //     setFormData({ ...formData, questions });
+  //   };
 
-    const handleQuestionChange = (
+  const handleQuestionChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
-    ) => {
+  ) => {
     const questions = formData.questions.map((question, i) => {
-        if (i === index) {
+      if (i === index) {
         return {
-            ...question,
-            question: event.target.value,
+          ...question,
+          question: event.target.value,
         };
-        }
-        return question;
+      }
+      return question;
     });
     setFormData({ ...formData, questions });
-    };
+  };
 
-    const handleAnswerChange = (
+  const handleAnswerChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
     index: number
-    ) => {
+  ) => {
     const questions = formData.questions.map((question, i) => {
-        if (i === index) {
+      if (i === index) {
         return {
-            ...question,
-            answer: event.target.value,
+          ...question,
+          answer: event.target.value,
         };
-        }
-        return question;
+      }
+      return question;
     });
     setFormData({ ...formData, questions });
-    };
+  };
 
-
-
-
-    const handleOptionChange = (
+  const handleOptionChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
     option: string
-    ) => {
+  ) => {
     const questions = formData.questions.map((question, i) => {
-        if (i === index) {
+      if (i === index) {
         return {
-            ...question,
-            options: {
+          ...question,
+          options: {
             ...question.options,
             [option]: event.target.value,
-            },
+          },
         };
-        }
-        return question;
+      }
+      return question;
     });
     setFormData({ ...formData, questions });
-    };
-
+  };
 
   const addQuestion = () => {
     setFormData({
@@ -131,6 +127,84 @@ const Quiz: NextPage = () => {
     }
   }, []);
 
+  function createQuiz() {
+    if (formData.questions.length < 5) {
+      toast.error("Please add atleast 5 questions", toastifyConfig);
+      return;
+    }
+
+    if (formData.Name === "") {
+      toast.error("Please enter quiz name", toastifyConfig);
+      return;
+    }
+
+    if (formData.image === "") {
+      toast.error("Please enter image link", toastifyConfig);
+      return;
+    }
+
+    //check if all questions have been filled
+    formData.questions.forEach((question, index) => {
+      if (question.question === "") {
+        toast.error(`Please enter question ${index + 1}`, toastifyConfig);
+        return;
+      }
+      if (question.options.a === "") {
+        toast.error(
+          `Please enter option a for question ${index + 1}`,
+          toastifyConfig
+        );
+        return;
+      }
+      if (question.options.b === "") {
+        toast.error(
+          `Please enter option b for question ${index + 1}`,
+          toastifyConfig
+        );
+        return;
+      }
+      if (question.options.c === "") {
+        toast.error(
+          `Please enter option c for question ${index + 1}`,
+          toastifyConfig
+        );
+        return;
+      }
+      if (question.options.d === "") {
+        toast.error(
+          `Please enter option d for question ${index + 1}`,
+          toastifyConfig
+        );
+        return;
+      }
+      if (question.answer === "") {
+        toast.error(
+          `Please select answer for question ${index + 1}`,
+          toastifyConfig
+        );
+        return;
+      }
+    });
+
+    var config = {
+      method: "post",
+      url: api_url + "/quiz/new",
+      headers: {
+        Authorization: "Bearer " + authToken,
+      },
+      data: formData,
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        toast.success("Quiz Created Successfully", toastifyConfig);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <Head>
@@ -139,7 +213,11 @@ const Quiz: NextPage = () => {
       </Head>
       <main className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col items-center justify-center ">
-          <div className="card w-[80vw] lg:w-[40vw]  shadow-2xl bg-base-100">
+          <div className="my-4 mt-8 text-center flex flex-col items-center">
+            <h2 className="card-title text-5xl">Create Quiz</h2>
+            <h3 className="text-center text-red-500">all feilds are mandatory</h3>
+          </div>
+          <div className="card w-[80vw] lg:w-[60vw]  shadow-2xl bg-base-100">
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
@@ -150,8 +228,8 @@ const Quiz: NextPage = () => {
                   type="text"
                   placeholder="Quiz Name"
                   className="input input-bordered"
-                    onChange={handleChange}
-                    value={formData.Name}
+                  onChange={handleChange}
+                  value={formData.Name}
                 />
               </div>
               <div className="form-control">
@@ -167,8 +245,8 @@ const Quiz: NextPage = () => {
                   type="text"
                   placeholder="image link"
                   className="input input-bordered"
-                    onChange={handleChange}
-                    value={formData.image}
+                  onChange={handleChange}
+                  value={formData.image}
                 />
               </div>
 
@@ -197,7 +275,9 @@ const Quiz: NextPage = () => {
                       placeholder="Enter option A"
                       className="input input-bordered"
                       value={question.options.a}
-                      onChange={(event) => handleOptionChange(event, index, "a")}
+                      onChange={(event) =>
+                        handleOptionChange(event, index, "a")
+                      }
                     />
                   </div>
                   <div className="form-control">
@@ -210,7 +290,9 @@ const Quiz: NextPage = () => {
                       placeholder="Enter option B"
                       className="input input-bordered"
                       value={question.options.b}
-                      onChange={(event) => handleOptionChange(event, index, "b")}
+                      onChange={(event) =>
+                        handleOptionChange(event, index, "b")
+                      }
                     />
                   </div>
                   <div className="form-control">
@@ -223,7 +305,9 @@ const Quiz: NextPage = () => {
                       placeholder="Enter option C"
                       className="input input-bordered"
                       value={question.options.c}
-                      onChange={(event) => handleOptionChange(event, index, "c")}
+                      onChange={(event) =>
+                        handleOptionChange(event, index, "c")
+                      }
                     />
                   </div>
                   <div className="form-control">
@@ -236,62 +320,51 @@ const Quiz: NextPage = () => {
                       placeholder="Enter option D"
                       className="input input-bordered"
                       value={question.options.d}
-                      onChange={(event) => handleOptionChange(event, index, "d")}
+                      onChange={(event) =>
+                        handleOptionChange(event, index, "d")
+                      }
                     />
                   </div>
 
-                    <div className="form-control">
+                  <div className="form-control">
                     <label className="label">
-                        <span className="label-text">Answer</span>
+                      <span className="label-text">Answer</span>
                     </label>
                     <select
-
-                        name="answer"
-                        className="select select-bordered w-full max-w-xs"
-                        value={question.answer}
-                        onChange={(event) => handleAnswerChange(event, index)}
+                      name="answer"
+                      className="select select-bordered w-full max-w-xs"
+                      value={question.answer}
+                      onChange={(event) => handleAnswerChange(event, index)}
                     >
-                        <option value="">Select Answer</option>
-                        <option value="a">Option A</option>
-                        <option value="b">Option B</option>
-                        <option value="c">Option C</option>
-                        <option value="d">Option D</option>
+                      <option value="">Select Answer</option>
+                      <option value="a">Option A</option>
+                      <option value="b">Option B</option>
+                      <option value="c">Option C</option>
+                      <option value="d">Option D</option>
                     </select>
-                    </div>
+                  </div>
 
-
-
-
-                  <button onClick={() => removeQuestion(index)} className="btn btn-error my-4">
+                  <button
+                    onClick={() => removeQuestion(index)}
+                    className="btn btn-error my-4"
+                  >
                     Remove Question
                   </button>
                 </div>
               ))}
-              <button className="btn btn-accent" onClick={addQuestion}>Add Question</button>
+              <button className="btn btn-accent" onClick={addQuestion}>
+                Add Question
+              </button>
 
               <div className="form-control mt-6">
-                <button className="btn btn-primary btn-block" onClick={()=>{
-                    console.log(formData)
+                <button
+                  className="btn btn-primary btn-block"
+                  onClick={() => {
+                    console.log(formData);
 
-                    var config = {
-                        method: 'post',
-                        url: api_url + '/quiz/new',
-                        headers: { 
-                          'Authorization': 'Bearer ' + authToken,
-                        },
-                        data : formData
-                      };
-                      
-                      axios(config)
-                      .then(function (response) {
-                        console.log(JSON.stringify(response.data));
-                        toast.success("Quiz Created Successfully" , toastifyConfig)
-                      })
-                      .catch(function (error) {
-                        console.log(error);
-                      });
-                      
-                }}>
+                    createQuiz();
+                  }}
+                >
                   Create Quiz
                 </button>
               </div>
