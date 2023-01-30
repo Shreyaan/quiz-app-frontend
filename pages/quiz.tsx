@@ -88,8 +88,8 @@ const Quiz: NextPage = () => {
         <title>quiz app</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="hero min-h-screen bg-base-200">
-        <div className="hero-content flex-col items-center justify-center ">
+      <main className="hero min-h-screen ">
+        <div className="hero-content flex-col items-center justify-center  bg-base-200 ">
           <h1 className="text-3xl font-bold my-8 mt-16">
             {" "}
             Here are all the avaiable quizes. You can even{" "}
