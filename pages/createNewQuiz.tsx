@@ -4,7 +4,7 @@ import Image from "next/image";
 import { HeroText } from "../components/HeroText";
 import { api_url, toastifyConfig } from "../utils/config";
 import { useLocalStorage } from "usehooks-ts";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Router from "next/router";
 import axios from "axios";
 import { errorHandler } from "../utils/errorHandler";
@@ -23,11 +23,27 @@ interface Questions {
 
 const Quiz: NextPage = () => {
   const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
+
+  useEffect(() => {
+    if (!authToken) {
+      Router.push("/");
+    }
+  }, []);
+
+
   const [formData, setFormData] = useState({
     Name: "",
     image: "",
     questions: [] as Question[],
   });
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event: {
+    target: { files: SetStateAction<null>[] };
+  }) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -35,22 +51,6 @@ const Quiz: NextPage = () => {
       [event.target.name]: event.target.value,
     });
   };
-
-  //   const handleQuestionChange = (
-  //     event: React.ChangeEvent<HTMLInputElement>,
-  //     index: number
-  //   ) => {
-  //     const questions = formData.questions.map((question, i) => {
-  //       if (i === index) {
-  //         return {
-  //           ...question,
-  //           [event.target.name]: event.target.value,
-  //         };
-  //       }
-  //       return question;
-  //     });
-  //     setFormData({ ...formData, questions });
-  //   };
 
   const handleQuestionChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -121,12 +121,7 @@ const Quiz: NextPage = () => {
     });
   };
 
-  useEffect(() => {
-    if (!authToken) {
-      Router.push("/");
-    }
-  }, []);
-
+  
   function createQuiz() {
     if (formData.questions.length < 5) {
       toast.error("Please add atleast 5 questions", toastifyConfig);
@@ -201,7 +196,7 @@ const Quiz: NextPage = () => {
         toast.success("Quiz Created Successfully", toastifyConfig);
       })
       .catch(function (error) {
-        console.log(error);
+        errorHandler(error);
       });
   }
 
@@ -215,7 +210,9 @@ const Quiz: NextPage = () => {
         <div className="hero-content flex-col items-center justify-center ">
           <div className="my-4 mt-8 text-center flex flex-col items-center">
             <h2 className="card-title text-5xl">Create Quiz</h2>
-            <h3 className="text-center text-red-500">all feilds are mandatory</h3>
+            <h3 className="text-center text-red-500">
+              all feilds are mandatory
+            </h3>
           </div>
           <div className="card w-[80vw] lg:w-[60vw]  shadow-2xl bg-base-100">
             <div className="card-body">
@@ -234,19 +231,20 @@ const Quiz: NextPage = () => {
               </div>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">
-                    Image Link (we will be adding functionality to dicrectly
-                    upload an image file real soon. till now please use a
-                    service like tenor or imgur and test url)
-                  </span>
+                  <span className="label-text">Image</span>
                 </label>
-                <input
+                {/* <input
                   name="image"
                   type="text"
                   placeholder="image link"
                   className="input input-bordered"
                   onChange={handleChange}
                   value={formData.image}
+                /> */}
+                <input
+                  type="file"
+                  className="file-input file-input-bordered w-full max-w-xs"
+                  accept="image/*"
                 />
               </div>
 
