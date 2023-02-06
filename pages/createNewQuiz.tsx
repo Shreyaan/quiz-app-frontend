@@ -4,7 +4,7 @@ import Image from "next/image";
 import { HeroText } from "../components/HeroText";
 import { api_url, toastifyConfig } from "../utils/config";
 import { useLocalStorage } from "usehooks-ts";
-import { SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 import Router from "next/router";
 import axios from "axios";
 import { errorHandler } from "../utils/errorHandler";
@@ -37,12 +37,10 @@ const Quiz: NextPage = () => {
     questions: [] as Question[],
   });
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null as File | null);
 
-  const handleFileChange = (event: {
-    target: { files: SetStateAction<null>[] };
-  }) => {
-    setSelectedFile(event.target.files[0]);
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedFile((prevState) => event.target.files![0]);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -241,11 +239,20 @@ const Quiz: NextPage = () => {
                   onChange={handleChange}
                   value={formData.image}
                 /> */}
-                <input
-                  type="file"
-                  className="file-input file-input-bordered w-full max-w-xs"
-                  accept="image/*"
-                />
+                    <div>
+                  <input
+                    type="file"
+                    className="file-input file-input-bordered w-full max-w-xs"
+                    accept=".jpeg, .png"
+                    onChange={handleFileChange}
+                  />
+                  {selectedFile && (
+                    <img
+                      src={URL.createObjectURL(selectedFile)}
+                      alt="Selected Image"
+                    />
+                  )}
+                </div>
               </div>
 
               {formData.questions.map((question, index) => (
