@@ -142,8 +142,8 @@ const QuizPage = () => {
         if (response.data.questionsLeft) {
           setCount(count + 1);
         } else {
-          //   Router.push("/score/" + response.data.score);
-          router.push("./quiz");
+            Router.push("/score/" + response.data.score);
+        //   router.push("./quiz");
         }
       })
       .catch(function (error) {
