@@ -46,7 +46,7 @@ const QuizPage = () => {
             <div>
               <h1 className="text-5xl font-bold"> {quiz.Name} Quiz </h1>
               <p className="py-6">Created by - {quiz.created_by}</p>
-            <img src={quiz.image} className=" max-w-sm rounded-lg shadow-2xl mx-auto my-5 mb-10 max-h-64" />
+            <img src={quiz.image} className=" md:max-w-sm rounded-lg shadow-2xl mx-auto my-5 mb-10 max-h-64 max-w-[90vw]" />
               {quiz.questions &&
                 quiz.questions.map((question, index) => {
                   return (
