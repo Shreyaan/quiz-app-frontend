@@ -21,7 +21,7 @@ import { ToastOptions } from "react-toastify";
   theme: "dark",
 };
 
-let api_url_base = "http://localhost:3002"
+let api_url_base = "https://quiz-express-production.up.railway.app"
 let api_url = api_url_base + "/api/v1"
 
 // api_url="http://localhost:4343"
