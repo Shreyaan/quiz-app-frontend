@@ -12,7 +12,6 @@ function Navbar() {
   const [showAvatar, setShowAvatar] = useState(false);
   const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
 
-
   useEffect(() => {
     if (userName) {
       setShowAvatar(true);
@@ -22,7 +21,9 @@ function Navbar() {
   return (
     <div className="navbar bg-base-100 z-10 sticky top-0 ">
       <div className="flex-1">
-        <Link className="btn btn-ghost normal-case text-xl" href={"./"}>Quiz app</Link>
+        <Link className="btn btn-ghost normal-case text-xl" href={"./"}>
+          Quiz app
+        </Link>
       </div>
       <div className="flex-none">
         <div className="dropdown dropdown-end">
@@ -46,11 +47,15 @@ function Navbar() {
               <a>My quizzes</a>
             </li>
             <li>
-              <button onClick={()=>{
-                setUserName("");
-                setAuthtoken("");
-                Router.push("/");
-              }}>Logout</button>
+              <button
+                onClick={() => {
+                  setUserName("");
+                  setAuthtoken("");
+                  Router.push("/");
+                }}
+              >
+                Logout
+              </button>
             </li>
           </ul>
         </div>
@@ -91,37 +96,44 @@ const QuizPage = () => {
     }
   }, [quizId]);
 
+  const handleClick = () => {
+    var axios = require("axios");
+
+    var config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: api_url + "/play/select/" + quizId,
+      headers: {
+        Authorization: "Bearer " + authToken,
+      },
+    };
+
+    axios(config)
+      .then(function (response: { data: any; }) {
+        console.log(JSON.stringify(response.data));
+        Router.push("../play/");
+      })
+      .catch(function (error: any) {
+        errorHandler(error);
+      });
+  };
+
   return (
     <div>
       <Navbar />
       {quiz && (
-        <div className="hero min-h-screen bg-base-200">
-          <div className="hero-content flex-col">
-            <div>
+        <div className="hero min-h-[90vh] bg-base-200">
+          <div className="hero-content text-center">
+            <div className="max-w-md">
               <h1 className="text-5xl font-bold"> {quiz.Name} Quiz </h1>
               <p className="py-6">Created by - {quiz.created_by}</p>
-            <img src={quiz.image} className=" md:max-w-sm rounded-lg shadow-2xl mx-auto my-5 mb-10 max-h-64 max-w-[90vw]" />
-              {quiz.questions &&
-                quiz.questions.map((question, index) => {
-                  return (
-                    <div>
-                      <p>
-                        Q{index + 1} {question.question}
-                      </p>
-                      {/* <ul>
-                    {question.options.map((option) => {
-                        return <li>{option}</li>;
-                    })}
-                    </ul> */}
-                      <div className="my-4">
-                          <p>a : {question.options.a}</p>
-                          <p> b : {question.options.b} </p>
-                          <p> c : {question.options.c}</p>
-                          <p> d : {question.options.d}</p>
-                      </div>
-                    </div>
-                  );
-                })}
+              <img
+                src={quiz.image}
+                className=" md:max-w-sm rounded-lg shadow-2xl mx-auto my-5 mb-10 max-h-64 max-w-[90vw]"
+              />
+              <button onClick={handleClick} className="btn btn-primary">
+                Get Started
+              </button>
             </div>
           </div>
         </div>

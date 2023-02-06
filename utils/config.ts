@@ -10,10 +10,20 @@ import { ToastOptions } from "react-toastify";
   progress: undefined,
   theme: "dark",
 };
+ const toastifyConfigPlay: ToastOptions<{}> = {
+  position: "bottom-right",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "dark",
+};
 
-let api_url_base = "https://quiz-express-production.up.railway.app"
+let api_url_base = "http://localhost:3002"
 let api_url = api_url_base + "/api/v1"
 
 // api_url="http://localhost:4343"
 
-export { toastifyConfig, api_url , api_url_base}
+export { toastifyConfig, api_url , api_url_base, toastifyConfigPlay}
