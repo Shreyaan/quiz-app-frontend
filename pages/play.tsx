@@ -148,7 +148,7 @@ const QuizPage = () => {
           setCount(count + 1);
         } else {
           setTotalScore(score);
-            Router.push("/score/" + response.data.score);
+            Router.push("/score" );
         //   router.push("./quiz");
         }
       })
