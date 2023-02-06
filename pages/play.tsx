@@ -74,6 +74,8 @@ const QuizPage = () => {
 
   const [count, setCount] = useState(0);
 
+  const [quizSlug, setQuizSlug] = useState("");
+
   useEffect(() => {
     if (!authToken) {
       Router.push("/");
@@ -89,6 +91,7 @@ const QuizPage = () => {
       axios(config)
         .then(function (response: { data: any }) {
           setQuestion(response.data);
+          setQuizSlug(response.data.quizSlug);
         })
         .catch(function (error: any) {
           if (error.response.data.message === "No quiz selected") {
@@ -106,6 +109,7 @@ const QuizPage = () => {
   function handleAnswer(answer: string) {
     var data = JSON.stringify({
       answer: answer,
+      quizSlug: quizSlug,
     });
 
     var config = {
