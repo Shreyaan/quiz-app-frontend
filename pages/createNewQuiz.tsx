@@ -4,13 +4,14 @@ import Image from "next/image";
 import { HeroText } from "../components/HeroText";
 import { api_url, toastifyConfig } from "../utils/config";
 import { useLocalStorage } from "usehooks-ts";
-import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, SetStateAction, use, useEffect, useState } from "react";
 import Router from "next/router";
 import axios from "axios";
 import { errorHandler } from "../utils/errorHandler";
 import Link from "next/link";
 import { Question } from "./quiz";
 import { toast } from "react-toastify";
+import router from "next/router";
 
 interface Questions {
   Name: string;
@@ -30,7 +31,6 @@ const Quiz: NextPage = () => {
     }
   }, []);
 
-
   const [formData, setFormData] = useState({
     Name: "",
     image: "",
@@ -38,10 +38,48 @@ const Quiz: NextPage = () => {
   });
 
   const [selectedFile, setSelectedFile] = useState(null as File | null);
+  const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedFile((prevState) => event.target.files![0]);
   };
+
+  useEffect(() => {
+    if (selectedFile) {
+      const handleFileUpload = () => {
+        const headers = {
+          Authorization: "Bearer " + authToken,
+        };
+
+        const formD = new FormData();
+        formD.append("image", selectedFile!);
+        setUploading(true);
+        axios
+          .post(api_url + "/quiz/upload", formD, {
+            headers,
+          })
+          .then((response) => {
+            console.log(response.data.url);
+            let url = response.data.url as string;
+            if (url) {
+              setFormData({ ...formData, image: url });
+              toast.success("Image uploaded successfully", toastifyConfig);
+              setSelectedFile(null);
+              setUploading(false);
+            } else {
+              toast.error("Image upload failed", toastifyConfig);
+              setUploading(false);
+            }
+          })
+          .catch((error) => {
+            errorHandler(error);
+            setUploading(false);
+          });
+      };
+
+      handleFileUpload();
+    }
+  }, [selectedFile]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -119,7 +157,6 @@ const Quiz: NextPage = () => {
     });
   };
 
-  
   function createQuiz() {
     if (formData.questions.length < 5) {
       toast.error("Please add atleast 5 questions", toastifyConfig);
@@ -192,6 +229,7 @@ const Quiz: NextPage = () => {
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         toast.success("Quiz Created Successfully", toastifyConfig);
+        router.push("/quiz");
       })
       .catch(function (error) {
         errorHandler(error);
@@ -239,18 +277,24 @@ const Quiz: NextPage = () => {
                   onChange={handleChange}
                   value={formData.image}
                 /> */}
-                    <div>
+                <div>
                   <input
                     type="file"
                     className="file-input file-input-bordered w-full max-w-xs"
                     accept=".jpeg, .png"
                     onChange={handleFileChange}
                   />
-                  {selectedFile && (
-                    <img
-                      src={URL.createObjectURL(selectedFile)}
-                      alt="Selected Image"
-                    />
+                  {uploading ? (
+                    <div className="text-center">
+                      <div className="spinner"></div>
+                      <p className="font-bold text-xl py-8 ">Uploading Image...</p>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      {formData.image && (
+                        <img src={formData.image} alt="Selected Image" />
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
