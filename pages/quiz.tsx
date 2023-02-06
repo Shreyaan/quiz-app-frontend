@@ -37,7 +37,7 @@ function Card({
   quizId,
 }: QuestionsWithoutQuestions) {
   return (
-    <div className="card w-96 bg-base-100 shadow-xl">
+    <div className="card w-96 max-w-[90vw] bg-base-100 shadow-xl">
       <figure className="px-10 pt-10 ">
         <img
           src={image}
@@ -88,8 +88,8 @@ const Quiz: NextPage = () => {
         <title>quiz app</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="hero min-h-screen ">
-        <div className="hero-content flex-col items-center justify-center  bg-base-200 ">
+      <main className="hero min-h-screen bg-base-200 ">
+        <div className="hero-content flex-col items-center justify-center   ">
           <h1 className="text-3xl font-bold my-8 mt-16">
             {" "}
             Here are all the avaiable quizes. You can even{" "}
