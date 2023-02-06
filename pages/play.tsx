@@ -69,6 +69,7 @@ const QuizPage = () => {
   const quizId = router.query.quiz as string;
 
   const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
+  const [totalScore , setTotalScore] = useLocalStorage("totalScore", 0);
 
   const [question, setQuestion] = useState<any>({});
 
@@ -146,6 +147,7 @@ const QuizPage = () => {
         if (response.data.questionsLeft) {
           setCount(count + 1);
         } else {
+          setTotalScore(score);
             Router.push("/score/" + response.data.score);
         //   router.push("./quiz");
         }

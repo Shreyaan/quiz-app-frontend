@@ -1,14 +1,22 @@
 import Link from 'next/link';
 import router, {useRouter } from 'next/router';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocalStorage } from 'usehooks-ts';
 
 
 function Score() {
     const router = useRouter();
-const score = router.query.score as string;
+
+
 
 const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
+const [totalScore , setTotalScore] = useLocalStorage("totalScore", 0);
+const [score , setScore] = useState(0);
+
+useEffect(() => {
+  setScore(totalScore)
+  setTotalScore(0)
+}, []);
 
 useEffect(() => {
     if (!authToken) {
@@ -16,6 +24,7 @@ useEffect(() => {
     }
 }, [authToken]);
 
+//when the page is exited the score is reset to 0
 
 
   return (
