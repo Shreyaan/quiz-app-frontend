@@ -1,13 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { HeroText } from "../components/HeroText";
-import { api_url } from "../utils/config";
+import { HeroText } from "../../components/HeroText";
+import { api_url } from "../../utils/config";
 import { useLocalStorage } from "usehooks-ts";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import axios from "axios";
-import { errorHandler } from "../utils/errorHandler";
+import { errorHandler } from "../../utils/errorHandler";
 import Link from "next/link";
 
 export interface Question {
@@ -49,7 +49,7 @@ function Card({
         <h2 className="card-title">{Name} Quiz</h2>
         <p>Created by {created_by}</p>
         <div className="card-actions">
-          <button className="btn btn-primary">Play Now</button>
+          <Link className="btn btn-primary" href={`./quiz/${Slug}`}>Play Now</Link>
         </div>
       </div>
     </div>
