@@ -121,16 +121,29 @@ const QuizPage = () => {
     axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
-        if (response.data.isCorrect) {
-          toast.success(response.data.message, toastifyConfigPlay);
+        let score = response.data.score || response.data.currentScore;
+        let questionsLeft;
+        if (response.data.questionsLeft) {
+          questionsLeft = " Ques left:" + response.data.questionsLeft;
         } else {
-          toast.error(response.data.message, toastifyConfigPlay);
+          questionsLeft = "";
+        }
+        if (response.data.isCorrect) {
+          toast.success(
+            response.data.message + questionsLeft,
+            toastifyConfigPlay
+          );
+        } else {
+          toast.error(
+            response.data.message + questionsLeft,
+            toastifyConfigPlay
+          );
         }
         if (response.data.questionsLeft) {
           setCount(count + 1);
         } else {
-        //   Router.push("/score/" + response.data.score);
-        router.push('./quiz')
+          //   Router.push("/score/" + response.data.score);
+          router.push("./quiz");
         }
       })
       .catch(function (error) {
