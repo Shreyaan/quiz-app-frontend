@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { toastifyConfig } from "../utils/config";
 import { api_url } from "../utils/config";
@@ -19,6 +19,16 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
   const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
   const [userName, setUserName] = useLocalStorage("userName", "");
 
+  const [authDone, setAuthDone] = useState(false);
+
+  useEffect(() => {
+    if (authToken) {
+      Router.push("/quiz");
+      return;
+    }
+
+    setAuthDone(true);
+  }, [authToken]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -76,75 +86,76 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
 
   return (
     <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-      <div className="card-body">
-        <form action="">
-          {!isLogin && (
+      {authDone && (
+        <div className="card-body">
+          <form action="">
+            {!isLogin && (
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input
+                  name="username"
+                  type="text"
+                  placeholder="username"
+                  className="input input-bordered"
+                  value={formData.username}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">Email</span>
               </label>
               <input
-                name="username"
-                type="text"
-                placeholder="username"
+                name="email"
+                type="email"
+                placeholder="email"
                 className="input input-bordered"
-                value={formData.username}
+                value={formData.email}
                 onChange={handleChange}
               />
             </div>
-          )}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Email</span>
-            </label>
-            <input
-              name="email"
-              type="email"
-              placeholder="email"
-              className="input input-bordered"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Password</span>
-            </label>
-            <input
-              name="password"
-              type="password"
-              placeholder="password"
-              className="input input-bordered"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            {isLogin && (
+            <div className="form-control">
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
-                  Forgot password?
-                </a>
+                <span className="label-text">Password</span>
               </label>
-            )}
+              <input
+                name="password"
+                type="password"
+                placeholder="password"
+                className="input input-bordered"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              {isLogin && (
+                <label className="label">
+                  <a href="#" className="label-text-alt link link-hover">
+                    Forgot password?
+                  </a>
+                </label>
+              )}
+            </div>
+          </form>
+          <div className="form-control mt-6">
+            <button
+              className="btn btn-primary"
+              onClick={() => handleLoginOrRegister()}
+            >
+              {isLogin ? "Login" : "Register"}
+            </button>
           </div>
-        </form>
-        <div className="form-control mt-6">
-          <button
-            className="btn btn-primary"
-            onClick={() => handleLoginOrRegister()}
-          >
-            {isLogin ? "Login" : "Register"}
-          </button>
+          <div className="form-control mt-2">
+            <Link
+              href={isLogin ? "./register" : "./"}
+              className="btn btn-secondary"
+            >
+              or {!isLogin ? "Login" : "Register"}
+            </Link>
+          </div>
         </div>
-        <div className="form-control mt-2">
-          <Link
-            href={isLogin ? "./register" : "./"}
-            className="btn btn-secondary"
-          >
-            or {!isLogin ? "Login" : "Register"}
-          </Link>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
-
