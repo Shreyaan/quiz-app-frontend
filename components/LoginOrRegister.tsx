@@ -17,6 +17,8 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
   });
 
   const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
+  const [userName, setUserName] = useLocalStorage("userName", "");
+
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -41,6 +43,7 @@ export function LoginOrRegister({ isLogin }: { isLogin: boolean }) {
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         setAuthtoken(response.data.token);
+        setUserName(response.data.username);
         toast.success("Login successful", toastifyConfig);
         Router.push("/quiz");
       })
