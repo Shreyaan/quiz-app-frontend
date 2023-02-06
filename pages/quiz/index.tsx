@@ -50,9 +50,7 @@ function Card({
         <h2 className="card-title">{Name} Quiz</h2>
         <p>Created by {created_by}</p>
         <div className="card-actions">
-          <Link className="btn btn-primary" href={`./quiz/${Slug}`}>
-            Play Now
-          </Link>
+          <Link className="btn btn-primary" href={`./quiz/${Slug}`}>Play Now</Link>
         </div>
       </div>
     </div>
@@ -91,74 +89,28 @@ const Quiz: NextPage = () => {
         <title>quiz app</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="drawer">
-        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col">
-          <div className="w-full navbar bg-base-300">
-            <div className="flex-none lg:hidden">
-              <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="inline-block w-6 h-6 stroke-current"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
-              </label>
-            </div>
-            <div className="flex-1 px-2 mx-2">Quiz App</div>
-            <div className="flex-none hidden lg:block">
-              <ul className="menu menu-horizontal">
-                <li>
-                  <Link href="">My account</Link>
-                </li>
-                {/* <li>
-                  <a>Navbar Item 2</a>
-                </li> */}
-              </ul>
-            </div>
+      <main className="hero min-h-screen bg-base-200 ">
+        <div className="hero-content flex-col items-center justify-center   ">
+          <h1 className="text-3xl font-bold my-8 mt-16">
+            {" "}
+            Here are all the avaiable quizes. You can even{" "}
+            <Link className="link link-primary" href={"./createNewQuiz"}>
+              create a new one
+            </Link>{" "}
+          </h1>
+          <div className="flex flex-row flex-wrap justify-center  items-center gap-4">
+            {quiz.map((quiz) => (
+              <Card
+                Name={quiz.Name}
+                Slug={quiz.Slug}
+                image={quiz.image}
+                created_by={quiz.created_by}
+                quizId={quiz.quizId}
+              />
+            ))}
           </div>
-          <main className="hero  bg-base-200 ">
-            <div className="hero-content flex-col items-center justify-center   ">
-              <h1 className="text-3xl font-bold my-8 mt-16">
-                {" "}
-                Here are all the avaiable quizes. You can even{" "}
-                <Link className="link link-primary" href={"./createNewQuiz"}>
-                  create a new one
-                </Link>{" "}
-              </h1>
-              <div className="flex flex-row flex-wrap justify-center  items-center gap-4">
-                {quiz.map((quiz) => (
-                  <Card
-                    Name={quiz.Name}
-                    Slug={quiz.Slug}
-                    image={quiz.image}
-                    created_by={quiz.created_by}
-                    quizId={quiz.quizId}
-                  />
-                ))}
-              </div>
-            </div>
-          </main>
         </div>
-        <div className="drawer-side">
-          <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-80 bg-base-100">
-            <li>
-              <a>Sidebar Item 1</a>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      </main>
     </div>
   );
 };
