@@ -50,7 +50,62 @@ function Card({
         <h2 className="card-title">{Name} Quiz</h2>
         <p>Created by {created_by}</p>
         <div className="card-actions">
-          <Link className="btn btn-primary" href={`./quiz/${Slug}`}>Play Now</Link>
+          <Link className="btn btn-primary" href={`./quiz/${Slug}`}>
+            Play Now
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Navbar() {
+  const [userName, setUserName] = useLocalStorage("userName", "");
+  const [showAvatar, setShowAvatar] = useState(false);
+  const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
+
+
+  useEffect(() => {
+    if (userName) {
+      setShowAvatar(true);
+    }
+  }, [userName]);
+
+  return (
+    <div className="navbar bg-base-100">
+      <div className="flex-1">
+        <a className="btn btn-ghost normal-case text-xl">Quiz app</a>
+      </div>
+      <div className="flex-none">
+        <div className="dropdown dropdown-end">
+          <label tabIndex={0} className="btn btn-ghost avatar">
+            {showAvatar && (
+              <div className="">
+                <div className="w-9 h-9 rounded-full object-cover bg-green-700 flex justify-center items-center text-white text-xs font-bold">
+                  {userName[0]}
+                </div>
+              </div>
+            )}
+          </label>
+          <ul
+            tabIndex={0}
+            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <li>
+              <a className="justify-between">Profile</a>
+            </li>
+            <li>
+              <a>My quiz</a>
+            </li>
+            <li>
+            <button onClick={()=>{
+                setUserName("");
+                setAuthtoken("");
+                
+                Router.push("/");
+              }}>Logout</button>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -60,6 +115,7 @@ function Card({
 const Quiz: NextPage = () => {
   const [authToken, setAuthtoken] = useLocalStorage("authToken", "");
   const [quiz, setQuiz] = useState<QuestionsWithoutQuestions[]>([]);
+  const [userName, setUserName] = useLocalStorage("userName", "");
 
   useEffect(() => {
     if (!authToken) {
@@ -89,6 +145,7 @@ const Quiz: NextPage = () => {
         <title>quiz app</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Navbar></Navbar>
       <main className="hero min-h-screen bg-base-200 ">
         <div className="hero-content flex-col items-center justify-center   ">
           <h1 className="text-3xl font-bold my-8 mt-16">
