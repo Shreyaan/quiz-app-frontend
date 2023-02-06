@@ -41,16 +41,36 @@ const QuizPage = () => {
   return (
     <div>
       {quiz && (
-       <div className="hero min-h-screen bg-base-200">
-       <div className="hero-content flex-col lg:flex-row-reverse">
-         <img src={quiz.image}  className="max-w-sm rounded-lg shadow-2xl" />
-         <div>
-           <h1 className="text-5xl font-bold"> {quiz.Name} Quiz </h1>
-           <p className="py-6">Created by - {quiz.created_by}</p>
-           
-         </div>
-       </div>
-     </div>
+        <div className="hero min-h-screen bg-base-200">
+          <div className="hero-content flex-col">
+            <div>
+              <h1 className="text-5xl font-bold"> {quiz.Name} Quiz </h1>
+              <p className="py-6">Created by - {quiz.created_by}</p>
+            <img src={quiz.image} className=" max-w-sm rounded-lg shadow-2xl mx-auto my-5 mb-10 max-h-64" />
+              {quiz.questions &&
+                quiz.questions.map((question, index) => {
+                  return (
+                    <div>
+                      <p>
+                        Q{index + 1} {question.question}
+                      </p>
+                      {/* <ul>
+                    {question.options.map((option) => {
+                        return <li>{option}</li>;
+                    })}
+                    </ul> */}
+                      <div className="my-4">
+                          <p>a : {question.options.a}</p>
+                          <p> b : {question.options.b} </p>
+                          <p> c : {question.options.c}</p>
+                          <p> d : {question.options.d}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

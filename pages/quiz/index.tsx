@@ -27,6 +27,7 @@ export interface QuestionsWithoutQuestions {
   image: string;
   created_by: string;
   quizId: string;
+  questions?: Question[];
 }
 
 function Card({
